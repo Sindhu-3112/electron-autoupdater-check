@@ -12,6 +12,10 @@ asarUnpack:
   - resources/**
 win:
   executableName: auto-updater
+  publish:
+    provider: github
+    owner: Sindhu-3112
+    repo: electron-autoupdater-check 
 nsis:
   artifactName: ${name}-${version}-setup.${ext}
   shortcutName: ${productName}
@@ -38,5 +42,5 @@ appImage:
   artifactName: ${name}-${version}.${ext}
 npmRebuild: false
 publish:
-  provider: generic
-  url: https://example.com/auto-updates
+  provider: github
+  owner: Sindhu-3112

@@ -1,7 +1,9 @@
-import { app, shell, BrowserWindow, ipcMain } from 'electron'
+import { app, shell, BrowserWindow, ipcMain, dialog} from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
+import pkg from 'electron-updater';
+const { autoUpdater } = pkg;
 
 function createWindow() {
   // Create the browser window.
@@ -35,6 +37,7 @@ function createWindow() {
   }
 }
 
+let updateInterval = null;
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
@@ -54,12 +57,42 @@ app.whenReady().then(() => {
 
   createWindow()
 
+   updateInterval = setInterval(() => autoUpdater.checkForUpdates(), 600000);
+
   app.on('activate', function () {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (BrowserWindow.getAllWindows().length === 0) createWindow()
   })
 })
+
+
+autoUpdater.on("update-available", (_event, releaseNotes, releaseName) => {
+   const dialogOpts = {
+      type: 'info',
+      buttons: ['Ok'],
+      title: 'Update Available',
+      message: process.platform === 'win32' ? releaseNotes : releaseName,
+      detail: 'A new version download started. The app will be restarted to install the update.'
+   };
+   dialog.showMessageBox(dialogOpts);
+ 
+   updateInterval = null;
+});
+
+autoUpdater.on("update-downloaded", (_event, releaseNotes, releaseName) => {
+   const dialogOpts = {
+      type: 'info',
+      buttons: ['Restart', 'Later'],
+      title: 'Application Update',
+      message: process.platform === 'win32' ? releaseNotes : releaseName,
+      detail: 'A new version has been downloaded. Restart the application to apply the updates.'
+   };
+   dialog.showMessageBox(dialogOpts).then((returnValue) => {
+      if (returnValue.response === 0) autoUpdater.quitAndInstall()
+   });
+});
+
 
 // Quit when all windows are closed, except on macOS. There, it's common
 // for applications and their menu bar to stay active until the user quits

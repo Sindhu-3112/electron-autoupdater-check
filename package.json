@@ -19,7 +19,8 @@
   },
   "dependencies": {
     "@electron-toolkit/preload": "^3.0.2",
-    "@electron-toolkit/utils": "^4.0.0"
+    "@electron-toolkit/utils": "^4.0.0",
+    "electron-updater": "^6.6.2"
   },
   "devDependencies": {
     "@electron-toolkit/eslint-config": "^2.1.0",
@@ -37,4 +38,5 @@
     "react-dom": "^19.2.1",
     "vite": "^7.2.6"
   }
+  
 }
